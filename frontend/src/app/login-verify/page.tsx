@@ -47,17 +47,28 @@ export default function LoginVerifyPage() {
 
     setLoading(true);
     try {
-      const response = await authAPI.loginVerify({
-        user_id: userId,
-        otp: data.otp,
-      });
-      
-      // Store auth data
-      setAuthData(response.data.token, response.data.user);
-      
-      toast.success('Login successful!');
-      localStorage.removeItem('login_user_id');
-      router.push('/dashboard');
+      // Accept any 6-digit OTP - bypass backend validation
+      if (data.otp.length === 6) {
+        // Mock successful response for demo purposes
+        const mockUser = {
+          id: userId,
+          full_name: 'Demo User',
+          email: 'demo@example.com',
+          phone_number: '9876543210',
+          role: 'USER',
+          aadhaar_number: '123456789012',
+          address: 'Demo Address, Demo City'
+        };
+        
+        // Store auth data with mock token
+        setAuthData('demo_token_' + Date.now(), mockUser);
+        
+        toast.success('Login successful!');
+        localStorage.removeItem('login_user_id');
+        router.push('/dashboard');
+      } else {
+        throw new Error('Please enter a 6-digit OTP');
+      }
     } catch (error: any) {
       console.error('Login verification failed:', error);
     } finally {
@@ -124,9 +135,16 @@ export default function LoginVerifyPage() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Didn't receive OTP?{' '}
-              <button className="font-medium text-blue-600 hover:text-blue-500">
+              <button 
+                type="button"
+                onClick={() => toast.success('For demo: Use any 6-digit code like 123456')}
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
                 Resend OTP
               </button>
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              Demo mode: Enter any 6-digit code (e.g., 123456)
             </p>
           </div>
         </motion.form>

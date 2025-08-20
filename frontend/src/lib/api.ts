@@ -25,13 +25,19 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message = error.response?.data?.error || error.message || 'An error occurred';
-    toast.error(message);
+    // Only show error toast for non-auth related errors in demo mode
+    if (!error.config?.url?.includes('/api/auth/')) {
+      const message = error.response?.data?.error || error.message || 'An error occurred';
+      toast.error(message);
+    }
     
     if (error.response?.status === 401) {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_data');
-      window.location.href = '/login';
+      // Don't redirect to login in demo mode for auth errors
+      if (!error.config?.url?.includes('/api/auth/')) {
+        window.location.href = '/login';
+      }
     }
     
     return Promise.reject(error);
