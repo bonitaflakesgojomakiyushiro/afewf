@@ -61,11 +61,14 @@ export default function LoginVerifyPage() {
         };
         
         // Store auth data with mock token
-        setAuthData('demo_token_' + Date.now(), mockUser);
+        const token = 'demo_token_' + Date.now();
+        setAuthData(token, mockUser);
         
         toast.success('Login successful!');
         localStorage.removeItem('login_user_id');
-        router.push('/dashboard');
+        
+        // Force a page reload to ensure the Layout component recognizes the auth state
+        window.location.href = '/dashboard';
       } else {
         throw new Error('Please enter a 6-digit OTP');
       }

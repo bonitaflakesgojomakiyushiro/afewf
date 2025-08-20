@@ -11,6 +11,7 @@ import { authAPI } from '@/lib/api';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import toast from 'react-hot-toast';
+import { setAuthData } from '@/lib/auth';
 
 const verifySchema = z.object({
   otp: z.string().length(6, 'OTP must be 6 digits'),
@@ -26,6 +27,7 @@ type VerifyForm = z.infer<typeof verifySchema>;
 export default function VerifyOTPPage() {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [generatedUserId, setGeneratedUserId] = useState<string | null>(null);
   const router = useRouter();
 
   const {
@@ -38,12 +40,14 @@ export default function VerifyOTPPage() {
 
   useEffect(() => {
     const pendingUserId = localStorage.getItem('pending_user_id');
+    const genUserId = localStorage.getItem('generated_user_id');
     if (!pendingUserId) {
       toast.error('No pending registration found');
       router.push('/register');
       return;
     }
     setUserId(pendingUserId);
+    setGeneratedUserId(genUserId);
   }, [router]);
 
   const onSubmit = async (data: VerifyForm) => {
@@ -53,9 +57,27 @@ export default function VerifyOTPPage() {
     try {
       // Accept any 6-digit OTP and any password - bypass backend validation
       if (data.otp.length === 6 && data.password.length >= 6) {
+        // Create mock user data for successful registration
+        const mockUser = {
+          id: userId,
+          full_name: 'Demo User',
+          email: 'demo@example.com',
+          phone_number: '9876543210',
+          role: 'USER',
+          aadhaar_number: '123456789012',
+          address: 'Demo Address, Demo City'
+        };
+        
+        // Store auth data
+        const token = 'demo_token_' + Date.now();
+        setAuthData(token, mockUser);
+        
         toast.success('Account verified successfully!');
         localStorage.removeItem('pending_user_id');
-        router.push('/login');
+        localStorage.removeItem('generated_user_id');
+        
+        // Redirect to dashboard since user is now authenticated
+        window.location.href = '/dashboard';
       } else {
         if (data.otp.length !== 6) {
           throw new Error('Please enter a 6-digit OTP');
