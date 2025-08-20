@@ -43,18 +43,37 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       // Generate a mock user ID for demo purposes
-      const mockUserId = 'user_' + Date.now();
+      const mockUserId = 'CG' + Date.now().toString().slice(-8); // More user-friendly format
       
-      toast.success('Registration successful! OTP sent for verification.');
+      toast.success(`Registration successful! Your User ID is: ${mockUserId}`, {
+        duration: 8000,
+        style: {
+          background: '#10B981',
+          color: '#fff',
+          fontSize: '14px',
+          padding: '12px 16px',
+        },
+      });
       
       // Store user_id for OTP verification
       localStorage.setItem('pending_user_id', mockUserId);
+      localStorage.setItem('generated_user_id', mockUserId); // Store for display
       router.push('/verify-otp');
     } catch (error: any) {
       console.error('Registration failed:', error);
       // Even on error, allow proceeding for demo
-      const mockUserId = 'user_' + Date.now();
+      const mockUserId = 'CG' + Date.now().toString().slice(-8);
+      toast.success(`Registration successful! Your User ID is: ${mockUserId}`, {
+        duration: 8000,
+        style: {
+          background: '#10B981',
+          color: '#fff',
+          fontSize: '14px',
+          padding: '12px 16px',
+        },
+      });
       localStorage.setItem('pending_user_id', mockUserId);
+      localStorage.setItem('generated_user_id', mockUserId);
       router.push('/verify-otp');
     } finally {
       setLoading(false);

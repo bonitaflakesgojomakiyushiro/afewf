@@ -100,6 +100,21 @@ export default function VerifyOTPPage() {
           <p className="mt-2 text-sm text-gray-600">
             Enter the OTP sent to your phone and create a password
           </p>
+          {generatedUserId && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg"
+            >
+              <p className="text-sm font-medium text-green-800">
+                Your User ID: <span className="font-mono text-green-900">{generatedUserId}</span>
+              </p>
+              <p className="text-xs text-green-600 mt-1">
+                Save this ID - you'll need it to login
+              </p>
+            </motion.div>
+          )}
         </div>
 
         <motion.form
@@ -159,6 +174,11 @@ export default function VerifyOTPPage() {
             <p className="text-xs text-gray-500 mt-2">
               Demo mode: Enter any 6-digit code (e.g., 123456)
             </p>
+            {generatedUserId && (
+              <p className="text-xs text-blue-600 mt-2 font-medium">
+                Remember your User ID: {generatedUserId}
+              </p>
+            )}
           </div>
         </motion.form>
       </motion.div>

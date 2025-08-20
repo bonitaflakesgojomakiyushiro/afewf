@@ -120,6 +120,9 @@ export default function LoginPage() {
                 Create one
               </Link>
             </p>
+            <p className="text-xs text-gray-500">
+              Demo: Use any User ID and password to login
+            </p>
             <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
               Forgot your password?
             </Link>
